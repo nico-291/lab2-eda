@@ -41,7 +41,20 @@ public class Votaciones{
     public void agregarVoto(Voto voto){votoRecibidos.add(voto);}    
     }
     public class Votante{
-
+    private int id;
+    private String nombre;
+    private boolean yaVoto;
+    public Votante(int id, String nombre, boolean yaVoto){
+        this.id = id;
+        this.nombre = nombre;
+        this.yaVoto = yaVoto;
+    }
+    public int getId(){return id;}
+        public String getNombre(){return nombre;}
+        public boolean getYaVoto(){return yaVoto;}
+        public void setId(int id){this.id = id;}
+        public void setNombre(String nombre){this.nombre = nombre;}
+        public void marcarVotado()
     }
     public class UrnaElectoral{}
 }
