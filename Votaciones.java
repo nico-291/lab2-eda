@@ -1,6 +1,6 @@
 import java.util.*;
-import java.util.Scanner;
-public class Votaciones{
+
+  class Votaciones{
     public class Voto{
         private int id;
         private int votanteId;
@@ -96,7 +96,7 @@ public class Votaciones{
 
 
     public class UrnaElectoral{
-        private LinkedList <Candidato> Listacandidatos;
+        public LinkedList <Candidato> Listacandidatos;
         private Stack <Voto> historialVotos;
         private Queue<Voto> votosReportados;
         private int idCounter;
@@ -176,6 +176,127 @@ public class Votaciones{
 
             resultados.put("Votos Reportados", votosReportados.size());
             return resultados;
+        }
+    }
+}
+
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        Votaciones sis = new Votaciones();
+        Votaciones.UrnaElectoral urna = sis.new UrnaElectoral();
+
+        while (true) {
+            System.out.println("Seleccione una opcion");
+            System.out.println("1. Registrar candidato");
+            System.out.println("2. Votar");
+            System.out.println("3. Reportar voto");
+            System.out.println("4. Ver resultados");
+            System.out.println("5. Salir");
+            System.out.print("Opcion: ");
+
+            int opciones = scan.nextInt();
+            scan.nextLine();
+
+            switch (opciones) {
+                case 1:
+                    // Registrar los candidato
+                    System.out.print("ID del candidato:");
+                    int idCan = scan.nextInt();
+                    scan.nextLine();
+
+                    System.out.print("Nombre del candidato: ");
+                    String nomCan = scan.nextLine();
+
+                    System.out.print("Partido: ");
+                    String partido = scan.nextLine();
+
+                    Votaciones.Candidato can = sis.new Candidato(idCan, nomCan, partido);
+                    urna.agregarCandidato(can);
+                    System.out.println("Candidato registrado");
+                    break;
+
+                case 2:
+                    // Votacion
+                    System.out.print("ID del votante: ");
+                    int idVot = scan.nextInt();
+                    scan.nextLine();
+
+                    System.out.print("Nombre del votante: ");
+                    String nomVot = scan.nextLine();
+
+                    System.out.println("Candidatos:");
+                    for (int i = 0; i < urna.Listacandidatos.size(); i++) {
+                        Votaciones.Candidato c = urna.Listacandidatos.get(i);
+                        System.out.println(c.getId() + " - " + c.getNombre() + " (" + c.getPartido() + ")");
+                    }
+
+                    System.out.print("ID candidato: ");
+                    int idCanSel = scan.nextInt();
+
+                    Votaciones.Votante vot = sis.new Votante(idVot, nomVot, false);
+
+                    if (urna.registrarVoto(vot, idCanSel)) {
+                        System.out.println("Voto registrado");
+                    }
+                    break;
+
+                case 3:
+                    // Reportar voto
+                    System.out.println("Candidatos:");
+                    for (int i = 0; i < urna.Listacandidatos.size(); i++) {
+                        Votaciones.Candidato c = urna.Listacandidatos.get(i);
+                        System.out.println(c.getId() + " - " + c.getNombre() + " (" + c.getVotosRecibidos().size() + " votos)");
+                    }
+
+                    System.out.print("ID del candidato: ");
+                    int idCanRep = scan.nextInt();
+
+                    System.out.print("ID del voto: ");
+                    int idVotRep = scan.nextInt();
+
+                    Votaciones.Candidato reportado = null;
+                    for (int i = 0; i < urna.Listacandidatos.size(); i++) {
+                        if (urna.Listacandidatos.get(i).getId() == idCanRep) {
+                            reportado = urna.Listacandidatos.get(i);
+                            break;
+                        }
+                    }
+
+                    if (reportado != null) {
+                        if (urna.reportarVoto(reportado, idVotRep)) {
+                            System.out.println("Voto reportado");
+                        }
+                    } else {
+                        System.out.println("El candidato no existe");
+                    }
+                    break;
+
+                case 4:
+                    // Mostrar los resultados
+                    System.out.println("Resultads");
+                    Map<String, Integer> res = urna.obtenerResultados();
+
+                    System.out.println("Votos por candidato:");
+                    for (Map.Entry<String, Integer> entry : res.entrySet()) {
+                        if (!entry.getKey().equals("Votos Reportados")) {
+                            System.out.println("- " + entry.getKey() + ": " + entry.getValue());
+                        }
+                    }
+
+                    System.out.println("Votos irregulares: " + res.get("Votos Reportados"));
+                    break;
+
+                case 5:
+                    // Salir
+                    scan.close();
+                    System.exit(0);
+                    break;
+
+                default:
+                    System.out.println("La opcion no es valida");
+            }
         }
     }
 }
